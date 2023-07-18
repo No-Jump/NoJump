@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
     public float Stamina = 0;
     //레벨 쿨타임
     public float levelTime;
-    public float levelcoolTime = 3f; 
+    public float levelcoolTime = 1.5f;
     //플레이어 체력
     public float Hp = 0;
     public float MaxHp = 10;
@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         Stamina = MaxSt;
+        Hp = MaxHp;
     }
 
 
@@ -155,6 +156,13 @@ public class Player : MonoBehaviour
                 StaminaBar.fillAmount = Stamina / 100f;
             }
         }
+        // 스테미너 0이면 레벨 0으로 낮춰서 원래 크기로
+        if (Stamina <= 0)
+        {
+            level = 0;
+            levelTime = 0;
+            transform.localScale = new Vector3(Length, 1, 1);
+        }
     }
 
     private void Level_Up()
@@ -183,10 +191,10 @@ public class Player : MonoBehaviour
             }
         }
         transform.localScale = new Vector3(Length, 1, 1);
-        // 스테미너 0이면 레벨 0으로 낮춰서 원래 크기로
-        if(Stamina <= 0)
-        {
-            level = 0;
-        }
+    }
+    // 데미지 입는 것 구현
+    public void TakeDamage(int damage)
+    {
+        Hp -= damage;
     }
 }
