@@ -20,6 +20,13 @@ public class Player : MonoBehaviour
     public float DashSt        => player_stat.stat[level].DashSt;
     public float Eyesight      => player_stat.stat[level].Eyesight;
     #endregion
+
+    #region 변수
+    [SerializeField] private Rigidbody2D rbody;
+    [SerializeField] private TrailRenderer tr;
+    [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private SpriteRenderer sprite;
+    
     //레벨 변수
     public int level = 0;
     //이동 변수
@@ -29,25 +36,35 @@ public class Player : MonoBehaviour
     private bool isDashing;
     private float DashingTime = 0.2f;
     private float DashingCooldown = 1f;
-    [SerializeField] private Rigidbody2D rbody;
-    [SerializeField] private TrailRenderer tr;
+    private int DashCount = 5;
     //플레이어 스테미너 바
     public Image StaminaBar;
-    public float MaxSt = 100;
-    public float Stamina = 0;
+    private float MaxSt = 100;
+    private float Stamina = 0;
     //레벨 쿨타임
-    public float levelTime;
-    public float levelcoolTime = 1.5f;
+    private float levelTime;
+    private float levelcoolTime = 0.5f;
     //플레이어 체력
-    public float Hp = 0;
-    public float MaxHp = 10;
+    private float Hp = 0;
+    private float MaxHp = 10;
+    public GameObject Life1;
+    public GameObject Life2;
+    public GameObject Life3;
+    public GameObject Life4;
+    public GameObject Life5;
+    #endregion
 
     private void Start()
     {
         Stamina = MaxSt;
         Hp = MaxHp;
+        Life1.GetComponent<Image>().enabled = true;
+        Life2.GetComponent<Image>().enabled = true;
+        Life3.GetComponent<Image>().enabled = true;
+        Life4.GetComponent<Image>().enabled = true;
+        Life5.GetComponent<Image>().enabled = true;
+        
     }
-
 
     private void Update()
     {
@@ -120,10 +137,11 @@ public class Player : MonoBehaviour
     private IEnumerator Player_Dash()
     {
         // 스테미너가 대쉬 스테미너보다 많으면 대쉬 발동.
-        if (Stamina - DashSt > 0)
+        if (Stamina - DashSt > 0 && DashCount > 0)
         {
             Stamina -= DashSt;
             StaminaBar.fillAmount = Stamina / 100f;
+            DashCount--;
             canDash = false;
             isDashing = true;
             float originalGravity = rbody.gravityScale;
@@ -150,7 +168,7 @@ public class Player : MonoBehaviour
         // 레벨이 0 일때 스테미너 회복 MaxSt이상은 안되게 함.
         if(level == 0)
         {
-            if(Stamina + StCharge < MaxSt)
+            if(Stamina < MaxSt)
             {
                 Stamina += StCharge * Time.deltaTime;
                 StaminaBar.fillAmount = Stamina / 100f;
@@ -160,41 +178,102 @@ public class Player : MonoBehaviour
         if (Stamina <= 0)
         {
             level = 0;
-            levelTime = 0;
-            transform.localScale = new Vector3(Length, 1, 1);
+            sprite.sprite = PlayerSprite;
+            boxCollider.size = new Vector3(Length, 0.81f, 1);
         }
     }
 
     private void Level_Up()
     {
-        // 레벨 업 3초 쿨타임 레벨 다운과 동일한 쿨타임
-        if(0 <= level && level <4)
+        // 플레이어 남은 체력만큼 레벨업 할 수 있음.
+        if ((Hp / 2) - 1 > level)
         {
-            if (levelTime > levelcoolTime)
+            // 레벨 업 1.5초 쿨타임 레벨 다운과 동일한 쿨타임
+            if (0 <= level && level < 4)
             {
-                level++;
-                levelTime = 0;
+                if (levelTime > levelcoolTime)
+                {
+                    level++;
+                    levelTime = 0;
+                    sprite.sprite = PlayerSprite;
+                    boxCollider.size = new Vector3(Length, 0.81f, 1);
+                }
             }
         }
-        transform.localScale = new Vector3(Length, 1, 1);
     }
 
     private void Level_Down()
     {
-        // 레벨 다운 3초 쿨타임 레벨업과 동일한 쿨타임
+        // 레벨 다운 1.5초 쿨타임 레벨업과 동일한 쿨타임
         if(0 < level && level <= 4)
         {
             if (levelTime > levelcoolTime)
             {
                 level--;
                 levelTime = 0;
+                sprite.sprite = PlayerSprite;
+                boxCollider.size = new Vector3(Length, 0.81f, 1);
             }
         }
-        transform.localScale = new Vector3(Length, 1, 1);
     }
-    // 데미지 입는 것 구현
+
     public void TakeDamage(int damage)
     {
+        //데미지 입는 것 구현
         Hp -= damage;
+        if(Hp == 8)
+        {
+            Life5.GetComponent<Image>().enabled = false;
+            if(level <= 4)
+            {
+                level = 3;
+                sprite.sprite = PlayerSprite;
+                boxCollider.size = new Vector3(Length, 0.81f, 1);
+            }
+        }
+        else if(Hp == 6)
+        {
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+            if (level <= 3)
+            {
+                level = 2;
+                sprite.sprite = PlayerSprite;
+                boxCollider.size = new Vector3(Length, 0.81f, 1);
+            }
+        }
+        else if(Hp == 4)
+        {
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+            Life3.GetComponent<Image>().enabled = false;
+            if (level <= 2)
+            {
+                level = 1;
+                sprite.sprite = PlayerSprite;
+                boxCollider.size = new Vector3(Length, 0.81f, 1);
+            }
+        }
+        else if(Hp == 2)
+        {
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+            Life3.GetComponent<Image>().enabled = false;
+            Life2.GetComponent<Image>().enabled = false;
+            if (level <= 1)
+            {
+                level = 0;
+                sprite.sprite = PlayerSprite;
+                boxCollider.size = new Vector3(Length, 0.81f, 1);
+            }
+        }
+        else if(Hp == 0){
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+            Life3.GetComponent<Image>().enabled = false;
+            Life2.GetComponent<Image>().enabled = false;
+            Life1.GetComponent<Image>().enabled = false;
+            Debug.Log("게임 오버");
+        }
     }
 }
