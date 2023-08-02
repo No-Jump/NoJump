@@ -5,17 +5,19 @@ using UnityEngine;
 public class collision : MonoBehaviour
 {
     public string targetObjectName;
+    public int demage = 1;
+    private Player player;
     void Start()
     {
-        Time.timeScale = 1;
+        player = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
-
+    
     // Update is called once per frame
     void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.name == targetObjectName)
         {
-            Time.timeScale = 0;
+            player.TakeDamage(demage);
         }
     }
 }
