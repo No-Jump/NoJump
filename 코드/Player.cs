@@ -224,7 +224,7 @@ public class Player : MonoBehaviour
         if(Hp == 8)
         {
             Life5.GetComponent<Image>().enabled = false;
-            if(level <= 4)
+            if(level >= 4)
             {
                 level = 3;
                 sprite.sprite = PlayerSprite;
@@ -235,7 +235,7 @@ public class Player : MonoBehaviour
         {
             Life5.GetComponent<Image>().enabled = false;
             Life4.GetComponent<Image>().enabled = false;
-            if (level <= 3)
+            if (level >= 3)
             {
                 level = 2;
                 sprite.sprite = PlayerSprite;
@@ -247,7 +247,7 @@ public class Player : MonoBehaviour
             Life5.GetComponent<Image>().enabled = false;
             Life4.GetComponent<Image>().enabled = false;
             Life3.GetComponent<Image>().enabled = false;
-            if (level <= 2)
+            if (level >= 2)
             {
                 level = 1;
                 sprite.sprite = PlayerSprite;
@@ -260,7 +260,7 @@ public class Player : MonoBehaviour
             Life4.GetComponent<Image>().enabled = false;
             Life3.GetComponent<Image>().enabled = false;
             Life2.GetComponent<Image>().enabled = false;
-            if (level <= 1)
+            if (level >= 1)
             {
                 level = 0;
                 sprite.sprite = PlayerSprite;
@@ -274,6 +274,66 @@ public class Player : MonoBehaviour
             Life2.GetComponent<Image>().enabled = false;
             Life1.GetComponent<Image>().enabled = false;
             Debug.Log("게임 오버");
+        }
+    }
+
+    public void RecoverHp(int Heal)
+    {
+        if(Hp > 10)
+        {
+            Hp = 10;
+        }
+        else
+        {
+            Hp += Heal;
+        }
+        if (Hp == 8)
+        {
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 6)
+        {
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 4)
+        {
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 2)
+        {
+            Life2.GetComponent<Image>().enabled = true;
+        }
+    }
+
+    public void RecoverSt(int StHeal)
+    {
+        if(Stamina > 100)
+        {
+            Stamina = 100;
+        }
+        else
+        {
+            Stamina += StHeal;
+            StaminaBar.fillAmount = Stamina / 100f;
+        }
+
+    }
+
+    public void RecoverDash(int ReDash)
+    {
+        if(DashCount > 5)
+        {
+            DashCount = 5;
+        }
+        else
+        {
+            DashCount += ReDash;
         }
     }
 }
