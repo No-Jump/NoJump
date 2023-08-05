@@ -6,22 +6,23 @@ using System.Diagnostics;
 public class smaller : MonoBehaviour
 {
     float scaleSpeed = 1f;
-    float timer;
+    float height;
 
-    private void Update()
+    void Start()
     {
-        timer += Time.deltaTime;
+        BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
+        height = boxCollider.size.y;
     }
-    void OnCollisionEnter2D(Collision2D other)
+    void OnCollisionStay2D(Collision2D other)
     {
-        if(timer > 1f)
-        {
             if (other.gameObject.tag == "Player")
             {
                 transform.localScale = new Vector3
-                    (transform.localScale.x - 0.7f * scaleSpeed * Time.deltaTime,
-                    transform.localScale.y - 0.7f * scaleSpeed * Time.deltaTime, 0);
+                (1, transform.localScale.y - 0.05f * scaleSpeed * Time.deltaTime, 0);
+                if (height == 0)
+                {
+                    Destroy(this);
+                }
             }
         }
     }
-}
