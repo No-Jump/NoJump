@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class TeaCup : MonoBehaviour
 {
-    Vector3 pos;
-    float delta = 13.9f;
-    float speed = 1.0f;
-    CameraShake camera;
+    public new CameraShake camera;
     public GameObject desk;
     void Start()
     {
-        pos = transform.position;
         camera = GameObject.FindWithTag("MainCamera").GetComponent<CameraShake>();
+        Go();
     }
-
-    void Update()
+    private void Go()
     {
-        Vector3 v = pos;
-        v.y += delta * Mathf.Sin(Time.time * speed);
-        transform.position = v;
+        iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-35.056f, -2.4f, 0),
+            "time", 2, "easeType", iTween.EaseType.easeOutQuint, "oncomplete", "Comeback"));
     }
-    private void OnCollisionEnter2D(Collision2D desk)
+    private void Comeback()
     {
-        camera.VibrateFOrTime(0.05f);
+        iTween.MoveTo(gameObject, iTween.Hash("position", new Vector3(-35.056f, 11.4f, 0),
+            "time", 2, "easeType", iTween.EaseType.easeOutQuint, "oncomplete", "Go"));
+    }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "desk")
+        {
+            camera.VibrateFOrTime(0.05f);
+        }
     }
 }
