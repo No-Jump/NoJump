@@ -56,12 +56,6 @@ public class GlassBottle : MonoBehaviour
 
             if (Bottlelock.activeSelf == true)
             {
-                player.Life1.GetComponent<Image>().enabled = false;
-                player.Life2.GetComponent<Image>().enabled = false;
-                player.Life3.GetComponent<Image>().enabled = false;
-                player.Life4.GetComponent<Image>().enabled = false;
-                player.Life5.GetComponent<Image>().enabled = false;
-
                 BottleLife1.GetComponent<Image>().enabled = true;
                 BottleLife2.GetComponent<Image>().enabled = true;
                 BottleLife3.GetComponent<Image>().enabled = true;
