@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class WallBounce : MonoBehaviour
 {
-    float Speed = 750f;
+    float Speed = 1000f;
     [SerializeField] private Rigidbody2D rb;
     float randomX, randomY;
     int count = 0;
     int damage = 1;
-    Player player;
 
     private void Start()
     {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
         randomX = Random.Range(-1f, 1f);
         randomY = Random.Range(-1f, 1f);
 
@@ -31,7 +29,7 @@ public class WallBounce : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Player"))
         {
-            player.TakeDamage(damage);
+            Player.Instance.TakeDamage(damage);
             Destroy(this.gameObject);
         }
     }

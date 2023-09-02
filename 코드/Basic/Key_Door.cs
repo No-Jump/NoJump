@@ -11,12 +11,7 @@ public class Key_Door : MonoBehaviour
     private float Speed = 5;
     public float MaxY;
     private float OffsetY;
-    Player player;
 
-    private void Start()
-    {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
-    }
 
     void Open_Door()
     {

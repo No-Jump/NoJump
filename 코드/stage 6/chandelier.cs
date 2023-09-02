@@ -5,13 +5,20 @@ using UnityEngine;
 public class chandelier : MonoBehaviour
 {
     Rigidbody2D rbody;
-    Player player;
     int damage = 10;
 
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
+
+        iTween.RotateTo(this.gameObject, iTween.Hash("z", 6f,
+                                                   "time", 0.8f,
+                                                   "looptype",iTween.LoopType.pingPong,
+                                                   "easetype",iTween.EaseType.linear,
+                                                   "name","chandelier",
+                                                   "ignoretimescale",true
+                                                   )
+            );
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -26,9 +33,14 @@ public class chandelier : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            player.TakeDamage(damage);
+            Player.Instance.TakeDamage(damage);
+        }
+        
+        if (collision.gameObject.CompareTag("Map"))
+        {
+            damage = 0;
+            rbody.isKinematic = true;
+            iTween.StopByName("chandelier");
         }
     }
-
-
 }

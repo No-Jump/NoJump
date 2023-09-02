@@ -8,13 +8,6 @@ public class WhiteRose : MonoBehaviour
     public float damageTime = 0.5f;
     public float damagecoolTime = 0;
 
-    Player player;
-
-    private void Start()
-    {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
-    }
-
     private void Update()
     {
         damagecoolTime += Time.deltaTime;
@@ -24,9 +17,9 @@ public class WhiteRose : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            if (player.level == 0|| player.level == 1)
+            if (Player.Instance.level == 0|| Player.Instance.level == 1)
             {
-                player.TakeDamage(damage);
+                Player.Instance.TakeDamage(damage);
             }
         }
     }

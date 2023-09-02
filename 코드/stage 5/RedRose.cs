@@ -8,13 +8,6 @@ public class RedRose : MonoBehaviour
     public float damageTime = 0.5f;
     public float damagecoolTime = 0;
 
-    Player player;
-
-    private void Start()
-    {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
-    }
-
     private void Update()
     {
         damagecoolTime += Time.deltaTime;
@@ -24,9 +17,9 @@ public class RedRose : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            if (player.level == 3 || player.level == 4)
+            if (Player.Instance.level == 3 || Player.Instance.level == 4)
             {
-                player.TakeDamage(damage);
+                Player.Instance.TakeDamage(damage);
             }
         }
     }
