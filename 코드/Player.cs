@@ -22,11 +22,11 @@ public class Player : MonoBehaviour
     #endregion
 
     #region 변수
-    [SerializeField] private Rigidbody2D rbody;
+    [SerializeField] public Rigidbody2D rbody;
     [SerializeField] private TrailRenderer tr;
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private SpriteRenderer sprite;
-    
+
     //레벨 변수
     public int level = 0;
     //이동 변수
@@ -45,25 +45,67 @@ public class Player : MonoBehaviour
     private float levelTime;
     private float levelcoolTime = 0.5f;
     //플레이어 체력
-    private float Hp = 0;
+    public float Hp = 0;
     private float MaxHp = 10;
     public GameObject Life1;
     public GameObject Life2;
     public GameObject Life3;
     public GameObject Life4;
     public GameObject Life5;
+    public GameObject Life6;
+    public GameObject Life7;
+    public GameObject Life8;
+    public GameObject Life9;
+    public GameObject Life10;
+    //플레이어 사운드 매니저
+    #endregion
+
+    #region 싱글톤
+    private static Player instance;
+
+    public static Player Instance
+    {
+        get
+        {
+            if (null == instance)
+            {
+                return null;
+            }
+            return instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+
+            //씬 전환되도 유지되도록
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
     #endregion
 
     private void Start()
     {
         Stamina = MaxSt;
+
         Hp = MaxHp;
         Life1.GetComponent<Image>().enabled = true;
         Life2.GetComponent<Image>().enabled = true;
         Life3.GetComponent<Image>().enabled = true;
         Life4.GetComponent<Image>().enabled = true;
         Life5.GetComponent<Image>().enabled = true;
-        
+        Life6.GetComponent<Image>().enabled = true;
+        Life7.GetComponent<Image>().enabled = true;
+        Life8.GetComponent<Image>().enabled = true;
+        Life9.GetComponent<Image>().enabled = true;
+        Life10.GetComponent<Image>().enabled = true;
     }
 
     private void Update()
@@ -121,8 +163,6 @@ public class Player : MonoBehaviour
 
         rbody.velocity = new Vector2 (horizontal * Speed, rbody.velocity.y);
     }
-
-
     private void Flip()
     {
         if(isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
@@ -139,6 +179,7 @@ public class Player : MonoBehaviour
         // 스테미너가 대쉬 스테미너보다 많으면 대쉬 발동.
         if (Stamina - DashSt > 0 && DashCount > 0)
         {
+            SoundManager.Instance.PlaySound("Dash");
             Stamina -= DashSt;
             StaminaBar.fillAmount = Stamina / 100f;
             DashCount--;
@@ -197,6 +238,7 @@ public class Player : MonoBehaviour
                     levelTime = 0;
                     sprite.sprite = PlayerSprite;
                     boxCollider.size = new Vector3(Length, 0.81f, 1);
+                    SoundManager.Instance.PlaySound("levelUp");
                 }
             }
         }
@@ -213,6 +255,7 @@ public class Player : MonoBehaviour
                 levelTime = 0;
                 sprite.sprite = PlayerSprite;
                 boxCollider.size = new Vector3(Length, 0.81f, 1);
+                SoundManager.Instance.PlaySound("levelDown");
             }
         }
     }
@@ -221,9 +264,15 @@ public class Player : MonoBehaviour
     {
         //데미지 입는 것 구현
         Hp -= damage;
-        if(Hp == 8)
+        SoundManager.Instance.PlaySound("Damage");
+        if(Hp == 9)
         {
-            Life5.GetComponent<Image>().enabled = false;
+            Life10.GetComponent<Image>().enabled = false;
+        }
+        else if(Hp == 8)
+        {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
             if(level >= 4)
             {
                 level = 3;
@@ -231,10 +280,18 @@ public class Player : MonoBehaviour
                 boxCollider.size = new Vector3(Length, 0.81f, 1);
             }
         }
+        else if (Hp == 7)
+        {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+        }
         else if(Hp == 6)
         {
-            Life5.GetComponent<Image>().enabled = false;
-            Life4.GetComponent<Image>().enabled = false;
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
             if (level >= 3)
             {
                 level = 2;
@@ -242,11 +299,22 @@ public class Player : MonoBehaviour
                 boxCollider.size = new Vector3(Length, 0.81f, 1);
             }
         }
+        else if (Hp == 5)
+        {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
+        }
         else if(Hp == 4)
         {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
             Life5.GetComponent<Image>().enabled = false;
-            Life4.GetComponent<Image>().enabled = false;
-            Life3.GetComponent<Image>().enabled = false;
             if (level >= 2)
             {
                 level = 1;
@@ -254,12 +322,26 @@ public class Player : MonoBehaviour
                 boxCollider.size = new Vector3(Length, 0.81f, 1);
             }
         }
+        else if (Hp == 3)
+        {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+        }
         else if(Hp == 2)
         {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
             Life5.GetComponent<Image>().enabled = false;
             Life4.GetComponent<Image>().enabled = false;
             Life3.GetComponent<Image>().enabled = false;
-            Life2.GetComponent<Image>().enabled = false;
             if (level >= 1)
             {
                 level = 0;
@@ -267,7 +349,24 @@ public class Player : MonoBehaviour
                 boxCollider.size = new Vector3(Length, 0.81f, 1);
             }
         }
+        else if (Hp == 1)
+        {
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
+            Life5.GetComponent<Image>().enabled = false;
+            Life4.GetComponent<Image>().enabled = false;
+            Life3.GetComponent<Image>().enabled = false;
+            Life2.GetComponent<Image>().enabled = false;
+        }
         else if(Hp == 0){
+            Life10.GetComponent<Image>().enabled = false;
+            Life9.GetComponent<Image>().enabled = false;
+            Life8.GetComponent<Image>().enabled = false;
+            Life7.GetComponent<Image>().enabled = false;
+            Life6.GetComponent<Image>().enabled = false;
             Life5.GetComponent<Image>().enabled = false;
             Life4.GetComponent<Image>().enabled = false;
             Life3.GetComponent<Image>().enabled = false;
@@ -279,7 +378,8 @@ public class Player : MonoBehaviour
 
     public void RecoverHp(int Heal)
     {
-        if(Hp > 10)
+        SoundManager.Instance.PlaySound("ReHp");
+        if (Hp > 10)
         {
             Hp = 10;
         }
@@ -287,32 +387,97 @@ public class Player : MonoBehaviour
         {
             Hp += Heal;
         }
-        if (Hp == 8)
+
+        if (Hp == 10)
+        {
+            Life10.GetComponent<Image>().enabled = true;
+            Life9.GetComponent<Image>().enabled = true;
+            Life8.GetComponent<Image>().enabled = true;
+            Life7.GetComponent<Image>().enabled = true;
+            Life6.GetComponent<Image>().enabled = true;
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 9)
+        {
+            Life9.GetComponent<Image>().enabled = true;
+            Life8.GetComponent<Image>().enabled = true;
+            Life7.GetComponent<Image>().enabled = true;
+            Life6.GetComponent<Image>().enabled = true;
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 8)
+        {
+            Life8.GetComponent<Image>().enabled = true;
+            Life7.GetComponent<Image>().enabled = true;
+            Life6.GetComponent<Image>().enabled = true;
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 7)
+        {
+            Life7.GetComponent<Image>().enabled = true;
+            Life6.GetComponent<Image>().enabled = true;
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 6)
+        {
+            Life6.GetComponent<Image>().enabled = true;
+            Life5.GetComponent<Image>().enabled = true;
+            Life4.GetComponent<Image>().enabled = true;
+            Life3.GetComponent<Image>().enabled = true;
+            Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 5)
         {
             Life5.GetComponent<Image>().enabled = true;
             Life4.GetComponent<Image>().enabled = true;
             Life3.GetComponent<Image>().enabled = true;
             Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
         }
-        else if (Hp == 6)
+        else if (Hp == 4)
         {
             Life4.GetComponent<Image>().enabled = true;
             Life3.GetComponent<Image>().enabled = true;
             Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
         }
-        else if (Hp == 4)
+        else if (Hp == 3)
         {
             Life3.GetComponent<Image>().enabled = true;
             Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
         }
         else if (Hp == 2)
         {
             Life2.GetComponent<Image>().enabled = true;
+            Life1.GetComponent<Image>().enabled = true;
+        }
+        else if (Hp == 1)
+        {
+            Life1.GetComponent<Image>().enabled = true;
         }
     }
 
     public void RecoverSt(int StHeal)
     {
+        SoundManager.Instance.PlaySound("Item");
         if(Stamina > 100)
         {
             Stamina = 100;
@@ -327,6 +492,7 @@ public class Player : MonoBehaviour
 
     public void RecoverDash(int ReDash)
     {
+        SoundManager.Instance.PlaySound("Item");
         if(DashCount > 5)
         {
             DashCount = 5;
