@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class DynamicWater2Df : MonoBehaviour
+public class DynamicWater : MonoBehaviour
 {
     [SerializeField]
     Vector2 bound = Vector2.one;
@@ -13,18 +15,22 @@ public class DynamicWater2Df : MonoBehaviour
         springConstant = .02f,
         damping = .1f,
         spread = .1f,
-        collisionVelocityFactor = .01f;
+        collisionVelocityFactor = .04f;
 
     Vector3[] vertices;
     Mesh mesh;
     float[] velocities, accelerations;
     float timer;
 
+    BuoyancyEffector2D buoyancy;
+
     private void Start()
     {
         InitializePhysics();
         GenerateMesh();
-        SetBosCollider2D();
+        SetBoxCollider();
+        SetBuoyancy();
+        StartCoroutine(changeBuoyancy());
     }
 
     void GenerateMesh()
@@ -32,12 +38,12 @@ public class DynamicWater2Df : MonoBehaviour
         float range = bound.x / (resolution - 1);
         vertices = new Vector3[resolution * 2];
 
-        for(int i = 0; i < resolution; i++)
+        for (int i = 0; i < resolution; i++)
         {
             vertices[i] = new Vector3(bound.x + (i * range), bound.y, 0f);
         }
 
-        for(int i = 0; i < resolution; i++)
+        for (int i = 0; i < resolution; i++)
         {
             vertices[i + resolution] = new Vector2(bound.x + (i * range), 0f);
         }
@@ -78,10 +84,35 @@ public class DynamicWater2Df : MonoBehaviour
         accelerations = new float[resolution];
     }
 
-    private void SetBosCollider2D()
+    private void SetBoxCollider()
     {
         BoxCollider2D collision = gameObject.AddComponent<BoxCollider2D>();
+        //BoxCollider2D collision2 = gameObject.AddComponent<BoxCollider2D>();
         collision.isTrigger = true;
+        collision.usedByEffector = true;
+
+        
+    }
+
+    private void SetBuoyancy()
+    {
+        //BuoyancyEffector2D buoyancy = gameObject.AddComponent<BuoyancyEffector2D>();
+        buoyancy = gameObject.AddComponent<BuoyancyEffector2D>();
+
+        buoyancy.surfaceLevel = 1f;
+
+    }
+
+    IEnumerator changeBuoyancy()
+    {
+        while (true)
+        {
+            buoyancy.surfaceLevel = 1.0f;
+            yield return new WaitForSeconds(0.5f);
+
+            buoyancy.surfaceLevel = 0.98f;
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     private void Update()
@@ -135,7 +166,6 @@ public class DynamicWater2Df : MonoBehaviour
             if (PointInsideCircle(transform.TransformPoint(vertices[i]), center, radius))
             {
                 velocities[i] = force;
-                Debug.Log("boom");
             }
         }
     }
