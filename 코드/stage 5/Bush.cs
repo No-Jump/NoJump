@@ -6,15 +6,10 @@ public class Bush : MonoBehaviour
 {
     // 변수 설정
     private GameObject bush;
-    Player player;
 
     [SerializeField] private BoxCollider2D playerCollider;
     
     // player 변수 값 설정을 위함.
-    private void Start()
-    {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
-    }
 
     private void Update()
     {
@@ -42,7 +37,7 @@ public class Bush : MonoBehaviour
     // 코루틴을 이용하여 부쉬의 박스콜라이더를 무시해 캐릭터를 떨구고 다시 비활성화
     private IEnumerator DisableCollision()
     {
-        BoxCollider2D bushCollider = bush.GetComponent<BoxCollider2D>();
+        PolygonCollider2D bushCollider = bush.GetComponent<PolygonCollider2D>();
 
         Physics2D.IgnoreCollision(playerCollider, bushCollider);
         yield return new WaitForSeconds(0.25f);
@@ -52,7 +47,7 @@ public class Bush : MonoBehaviour
     // 코루틴 함수 시작의 조건
     void Player_Bush()
     {
-        if (player.level > 2)
+        if (Player.Instance.level > 2)
         {
             if (bush != null)
             {

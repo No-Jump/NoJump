@@ -4,27 +4,42 @@ using UnityEngine;
 
 public class chandelier : MonoBehaviour
 {
-    Rigidbody2D rbody;
-    int damage = 10;
+    [SerializeField] Rigidbody2D rbody;
+    [SerializeField] Particle particle;
+    public GameObject des_json;
+    float offsetX = 0f, offsetY = 0.5f;
+    int damage = 10, count = 0;
 
     void Start()
     {
-        rbody = GetComponent<Rigidbody2D>();
-
-        iTween.RotateTo(this.gameObject, iTween.Hash("z", 6f,
+         iTween.RotateTo(this.gameObject, iTween.Hash("z", 10f,
                                                    "time", 0.8f,
                                                    "looptype",iTween.LoopType.pingPong,
-                                                   "easetype",iTween.EaseType.linear,
+                                                   "easetype",iTween.EaseType.easeInOutSine,
                                                    "name","chandelier",
                                                    "ignoretimescale",true
                                                    )
             );
     }
-
+    
+    public void Create_desjson()
+    {
+        Vector3 newPos = this.transform.position;
+        newPos.y += offsetY;
+        newPos.x += offsetX;
+        newPos.z = -5f;
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject newGameObject = Instantiate(des_json) as GameObject;
+            newGameObject.transform.position = newPos;
+        }
+    }
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            iTween.StopByName("chandelier");
             rbody.isKinematic = false;
         }
     }
@@ -40,7 +55,13 @@ public class chandelier : MonoBehaviour
         {
             damage = 0;
             rbody.isKinematic = true;
-            iTween.StopByName("chandelier");
+            rbody.mass = 100;
+            if(count == 0)
+            {
+                particle.StartParticleSystems(0,4);
+                Create_desjson();
+                count = 1;
+            }
         }
     }
 }
